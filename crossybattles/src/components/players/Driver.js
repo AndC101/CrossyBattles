@@ -1,5 +1,5 @@
 import React, { useEffect, useState, useRef } from 'react';
-import carImage from '../../images/car.webp';
+import carImage from '../../images/carpixel.png';
 import roadImage from '../../images/road.webp';
 import waterImage from '../../images/water.png';
 import grassImage from '../../images/grass.png';
@@ -11,18 +11,24 @@ const Driver = () => {
   const randomSeed = useRef("");
   const [map, setMap] = useState([]);
   const canvasRef = useRef(null); // Ref for the canvas element
+  const offScreenRef = useRef(null); // Ref for the canvas element
   const [selectedObstacle, setSelectedObstacle] = useState("none"); // State to store the selected obstacle
 
+    const carImg = new Image();
+    carImg.src = carImage;
+
+  const cars = [];
+
   const TERRAIN_IMAGES = {
-    road: roadImage,
-    grass: grassImage,
-    water: waterImage,
+    "road": roadImage,
+    "grass": grassImage,
+    "water": waterImage,
   };
 
   const OBSTACLE_IMAGES = {
-    car: carImage,
-    grass: grassImage,
-    water: waterImage,
+    "car": carImage,
+    "grass": grassImage,
+    "water": waterImage,
   };
 
   const TERRAIN_TEMPLATES = [
@@ -75,20 +81,28 @@ const Driver = () => {
        ret = ret.concat(generateTerrain());
       }
       setMap(ret);
-      console.log(map);
       updateCanvas();
     }
   }, [seed]);
 
   function updateCanvas(){
+    console.log("updating canvas");
     if (map.length > 0) {
       const canvas = canvasRef.current;
       const ctx = canvas.getContext('2d');
-      ctx.clearRect(0, 0, canvas.width, canvas.height); // Clear the canvas
-      const tileSize = 50;
+      const offScreenCanvas = offScreenRef.current;
+      const offScreenCtx = offScreenCanvas.getContext('2d');
+      offScreenCanvas.width = canvas.width;
+      offScreenCanvas.height = canvas.height; 
+
+      const tileSize = 60;
       let x = 0;
       let y = 0;
       const tilesPerRow = Math.floor(canvas.width / tileSize);
+
+      
+
+
 
       // Preload all images
       const imagePromises = map.map((terrain) => {
@@ -106,25 +120,70 @@ const Driver = () => {
           const y = i * tileSize; // Calculate y position
           while(x < canvas.width){
             ctx.drawImage(img, x, y, tileSize, tileSize); // Draw the image
+            offScreenCtx.drawImage(img, x, y, tileSize, tileSize); // Draw the terrain
             x += tileSize; // Move to the next tile position
           }
          
         });
-      });
-
-       
+      }); 
     }
+    
 
-     
   }
+
+  function updateCars(){
+    const ctx = canvasRef.current.getContext('2d');
+    console.log(offScreenRef.current)
+    if (offScreenRef.current) {
+      console.log("drawing offscreen canvas");
+      ctx.clearRect(0, 0, window.innerWidth, window.innerHeight);
+      ctx.drawImage(offScreenRef.current, 0, 0);
+      
+    }
+    
+
+    for(let i = 0; i < cars.length; i++){
+      const car = cars[i];
+      car.x += 1;
+      ctx.drawImage(carImg, car.x, car.y);
+    }
+    
+    window.requestAnimationFrame(updateCars);
+  }
+
+  function handleMousePressedCanvas(e){
+    let tileSize = 60;
+    let row = Math.floor(e.clientY / tileSize);
+    const canvas = canvasRef.current;
+    const ctx = canvas.getContext('2d');
+    const img = new Image();
+    img.src = OBSTACLE_IMAGES[selectedObstacle];
+    img.onload = () => {
+      ctx.drawImage(img, 0, row * tileSize, tileSize, tileSize); // Draw the image
+    };
+    cars.push({x: 0, y: row * tileSize, time: Date.now});
+    updateCars();
+  }
+
+  // useEffect(() => {
+  //   const intervalId = setInterval(() => {
+  //     for(let i = 0; i < cars.length; i++){
+  //       cars[i].x += 1;
+  //     }
+  //     updateCanvas();
+  //     updateCars();
+  //   }, 1000 / 60);
+  //   return () => clearInterval(intervalId);
+  // }, []);
 
   return (
     <div className="driver-screen">
       <div className="game-board">
-        <canvas  ref={canvasRef} width={window.innerWidth} height={window.innerHeight}></canvas>
+        <canvas ref={offScreenRef} style={{display: "none"}} width={window.innerWidth} height={window.innerHeight}></canvas>
+        <canvas onClick={(e) => {handleMousePressedCanvas(e)}} ref={canvasRef} width={window.innerWidth} height={window.innerHeight}></canvas>
       </div>
       <div className="sidebar">
-        <img onClick={() => {setSelectedObstacle("car"); console.log(selectedObstacle);}} src={carImage} alt="Car"></img>
+        <img onClick={() => {setSelectedObstacle('car'); console.log(selectedObstacle);}} src={carImage} alt="Car"></img>
       </div>
       <Chicken></Chicken>
     </div>
