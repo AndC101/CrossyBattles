@@ -121,10 +121,10 @@ const Driver = () => {
   return (
     <div className="driver-screen">
       <div className="game-board">
-        <canvas ref={canvasRef} width={window.innerWidth} height={window.innerHeight}></canvas>
+        <canvas  ref={canvasRef} width={window.innerWidth} height={window.innerHeight}></canvas>
       </div>
       <div className="sidebar">
-        <img src={carImage} alt="Car"></img>
+        <img onClick={() => {setSelectedObstacle("car"); console.log(selectedObstacle);}} src={carImage} alt="Car"></img>
       </div>
       <Chicken></Chicken>
     </div>
