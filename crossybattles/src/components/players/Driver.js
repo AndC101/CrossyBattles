@@ -7,7 +7,7 @@ import './players.css';
 
 const Driver = () => {
   const [seed, setSeed] = useState();
-  const [randomSeed, setRandomSeed] = useState();
+  const randomSeed = useRef("");
   const [map, setMap] = useState([]);
   const canvasRef = useRef(null); // Ref for the canvas element
 
@@ -26,18 +26,18 @@ const Driver = () => {
   function nextSeed(seed) {
     const a = 1664525;
     const c = 1013904223;
-    const m = 2 ** 32;
+    const m = 2 ** 31;
 
     return (a * seed + c) % m;
   }
 
   function generateTerrain() {
     let div = 2147483647 / TERRAIN_TEMPLATES.length;
-    let index = Math.floor(randomSeed / div);
-    console.log(index);
+    let index = Math.floor(randomSeed.current / div);
     let ret = [];
     ret = ret.concat(TERRAIN_TEMPLATES[index]);
-    setRandomSeed(nextSeed(randomSeed));
+    randomSeed.current = nextSeed(randomSeed.current);
+    console.log(ret);
     return ret;
   }
 
@@ -54,7 +54,7 @@ const Driver = () => {
     }
     hash = Math.abs(hash);
     setSeed(hash >>> 0);
-    setRandomSeed(hash >>> 0);
+    randomSeed.current = hash >>> 0;
 
     TERRAIN_TEMPLATES.sort(function (x, y) {
       return x.length - y.length;
@@ -62,7 +62,13 @@ const Driver = () => {
   }, []);
 
   useEffect(() => {
-    if(randomSeed != undefined) setMap(generateTerrain());
+    if(randomSeed.current != undefined){
+      let ret = [];
+      for(let i = 0; i < 10; i++){
+       ret = ret.concat(generateTerrain());
+      }
+      setMap(ret);
+    }
   }, [seed]);
 
   useEffect(() => {
@@ -75,17 +81,18 @@ const Driver = () => {
       let y = 0;
 
       map.forEach((terrain, i) => {
-        const img = new Image();
-        img.src = TERRAIN_IMAGES[terrain];
-        img.onload = () => {
-          console.log("image drawn");
-          while(x < canvas.width) {
-            ctx.drawImage(img, x, y, tileSize, tileSize);
-            x += tileSize;
-          }
-          if (x >= canvas.width) {
-            x = 0;
-            y += tileSize;
+        if(y < canvas.height) {
+          const img = new Image();
+          img.src = TERRAIN_IMAGES[terrain];
+          img.onload = () => {
+            while(x < canvas.width) {
+              ctx.drawImage(img, x, y, tileSize, tileSize);
+              x += tileSize;
+            }
+            if (x >= canvas.width) {
+              x = 0;
+              y += tileSize;
+            }
           }
         };
       });
@@ -95,7 +102,7 @@ const Driver = () => {
   return (
     <div className="driver-screen">
       <div className="game-board">
-        <canvas ref={canvasRef} width={500} height={500}></canvas>
+        <canvas ref={canvasRef} width={window.innerWidth} height={window.innerHeight}></canvas>
       </div>
       <div className="sidebar">
         <img src={carImage} alt="Car"></img>
