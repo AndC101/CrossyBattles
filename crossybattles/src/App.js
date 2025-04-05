@@ -4,10 +4,7 @@ import './App.css';
 function App() {
   return (
     <div className="App">
-      <div className='main-buttons'>
-        <button> Chicken </button>
-        <button> Driver </button>
-      </div>
+      
       
     </div>
   );
