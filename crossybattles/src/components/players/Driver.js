@@ -101,23 +101,25 @@ const Driver = () => {
       const tilesPerRow = Math.floor(canvas.width / tileSize);
 
       // Preload all images
-      const imagePromises = map.map((terrain) => {
+      const imagePromises = map.map((terrain, index) => {
         return new Promise((resolve) => {
           const img = new Image();
           img.src = TERRAIN_IMAGES[terrain];
-          img.onload = () => resolve({ img, terrain });
+          img.onload = () => resolve({ img, index }); 
         });
       });
-
+  
+      console.log(imagePromises);
       Promise.all(imagePromises).then((images) => {
+        images.sort((a, b) => a.index - b.index);
         images.forEach((data, i) => {
           const { img } = data;
           let x = 0;
-          const y = i * tileSize; // Calculate y position
+          const y = i * tileSize; 
           while(x < canvas.width){
-            ctx.drawImage(img, x, y, tileSize, tileSize); // Draw the image
-            offScreenCtx.drawImage(img, x, y, tileSize, tileSize); // Draw the terrain
-            x += tileSize; // Move to the next tile position
+            ctx.drawImage(img, x, y, tileSize, tileSize);
+            offScreenCtx.drawImage(img, x, y, tileSize, tileSize); 
+            x += tileSize; 
           }
          
         });
@@ -132,7 +134,6 @@ const Driver = () => {
     if (offScreenRef.current) {
       ctx.clearRect(0, 0, window.innerWidth, window.innerHeight);
       ctx.drawImage(offScreenRef.current, 0, 0);
-      
     }
     
 
@@ -156,8 +157,8 @@ const Driver = () => {
       ctx.drawImage(img, 0, row * tileSize, tileSize, tileSize); // Draw the image
     };
     if(selectedObstacle == "car"){
-      cars.push({x: 0, y: row * tileSize, time: Date.now, speed: map[row * tileSize] == "road"? 1 : 0.5});
-      console.log(cars)
+      console.log(map);
+      cars.push({x: 0, y: row * tileSize, time: Date.now, speed: map[row] == "road"? 1 : 0.5});
       updateCars();
     }
     
