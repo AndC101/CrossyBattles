@@ -11,9 +11,16 @@ const Driver = () => {
   const randomSeed = useRef("");
   const [map, setMap] = useState([]);
   const canvasRef = useRef(null); // Ref for the canvas element
+  const [selectedObstacle, setSelectedObstacle] = useState("none"); // State to store the selected obstacle
 
   const TERRAIN_IMAGES = {
     road: roadImage,
+    grass: grassImage,
+    water: waterImage,
+  };
+
+  const OBSTACLE_IMAGES = {
+    car: carImage,
     grass: grassImage,
     water: waterImage,
   };
@@ -40,7 +47,6 @@ const Driver = () => {
     let ret = [];
     ret = ret.concat(TERRAIN_TEMPLATES[index]);
     randomSeed.current = nextSeed(randomSeed.current);
-    console.log(ret);
     return ret;
   }
 
@@ -71,6 +77,7 @@ const Driver = () => {
        ret = ret.concat(generateTerrain());
       }
       setMap(ret);
+      console.log(map);
       updateCanvas();
     }
   }, [seed]);
@@ -83,27 +90,31 @@ const Driver = () => {
       const tileSize = 50;
       let x = 0;
       let y = 0;
+      const tilesPerRow = Math.floor(canvas.width / tileSize);
 
-        for(let i = 0; i < map.length; i++){
-          const terrain = map[i];
-          if(y < canvas.height) {
-            const img = new Image();
-            img.src = TERRAIN_IMAGES[terrain];
-            img.onload = () => {
-              while(x < canvas.width) {
-                ctx.drawImage(img, x, y, tileSize, tileSize);
-                x += tileSize;
-              }
-              if (x >= canvas.width) {
-                x = 0;
-                y += tileSize;
-              }
-            }
-            if (y >= canvas.height) {
-              break;
-            }
+      // Preload all images
+      const imagePromises = map.map((terrain) => {
+        return new Promise((resolve) => {
+          const img = new Image();
+          img.src = TERRAIN_IMAGES[terrain];
+          img.onload = () => resolve({ img, terrain });
+        });
+      });
+
+      Promise.all(imagePromises).then((images) => {
+        images.forEach((data, i) => {
+          const { img } = data;
+          let x = 0;
+          const y = i * tileSize; // Calculate y position
+          while(x < canvas.width){
+            ctx.drawImage(img, x, y, tileSize, tileSize); // Draw the image
+            x += tileSize; // Move to the next tile position
           }
-        }
+         
+        });
+      });
+
+       
     }
 
      
@@ -112,10 +123,10 @@ const Driver = () => {
   return (
     <div className="driver-screen">
       <div className="game-board">
-        <canvas ref={canvasRef} width={window.innerWidth} height={window.innerHeight}></canvas>
+        <canvas  ref={canvasRef} width={window.innerWidth} height={window.innerHeight}></canvas>
       </div>
       <div className="sidebar">
-        <img src={carImage} alt="Car"></img>
+        <img onClick={() => {setSelectedObstacle("car"); console.log(selectedObstacle);}} src={carImage} alt="Car"></img>
       </div>
       <Chicken></Chicken>
     </div>
