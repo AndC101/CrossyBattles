@@ -58,7 +58,6 @@ function Chicken() {
     });
 
     // Optionally log the mouse position to the console
-    console.log(`Mouse position: X: ${e.clientX}, Y: ${e.clientY}`);
   };
 
 
