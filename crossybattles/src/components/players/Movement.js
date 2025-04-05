@@ -1,8 +1,8 @@
 import React, { useEffect, useState, useRef } from 'react';
 import carImage from '../../images/carpixel.png';
 import roadImage from '../../images/road.webp';
-import waterImage from '../../images/water.png';
-import grassImage from '../../images/grass.png';
+import waterImage from '../../images/mud.webp';
+import grassImage from '../../images/pixelgrass.png';
 import './players.css';
 import Chicken from './chicken'
 
@@ -18,6 +18,14 @@ const Movement = () => {
   const terrainImageCache = useRef({});
   const [imagesLoaded, setImagesLoaded] = useState(false);
 
+  const offScreenRef = useRef(null); // Ref for the canvas element
+  const [selectedObstacle, setSelectedObstacle] = useState("none"); // State to store the selected obstacle
+  const [carMoving, setCarMoving] = useState(false);
+    const carImg = new Image();
+    carImg.src = carImage;
+
+  const cars = [];
+  
 
   // Handle keydown event
   const handleKeyDown = (e) => {
@@ -137,7 +145,6 @@ const Movement = () => {
     loadImages();
   }, []);
     
-
   //regenerate a new canvas
   function updateCanvas() {
     if (map.length > 0 && Object.keys(terrainImageCache.current).length > 0) {
@@ -164,10 +171,10 @@ const Movement = () => {
   const moveCanvas = (key) => {
     switch (key) {
       case 'w':
-        setScrollOffset(prev => prev + 20);
+        setScrollOffset(prev => prev + 40);
         break;
       case 's':
-        setScrollOffset(prev => prev - 20);
+        setScrollOffset(prev => prev - 40);
         break;
     }
   };
@@ -209,4 +216,4 @@ const Movement = () => {
   );
 };
 
-export default Movement;
+export default Movement;  
