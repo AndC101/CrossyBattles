@@ -1,28 +1,49 @@
-import logo from './logo.svg';
 import './App.css';
+import {TextField, Button} from '@mui/material';
+import {useEffect, useState} from "react";
 
-function MainMenu() {
-  return (
-    <div className="App">
-      <div className="title">
-        Crossy Battles
-      </div>
 
-      <div className="buttons">
-        <div className="create-game">
-          <button className="create-game-button">Create Game</button>
+const MainMenu = (setGameID) => {
+
+
+    const createGame = () => {
+        const randomID = Math.floor(Math.random() * 10000)
+        setGameID(randomID);
+
+    }
+
+    const joinGame = () => {
+
+    }
+
+    return (
+        <div className="App">
+            <div className="title">
+                Crossy Battles
+            </div>
+
+            <div className="buttons">
+                <div className="create-game">
+                    <Button
+                        className="create-game-button"
+                        onClick={createGame}>
+                        Create Game
+                    </Button>
+                </div>
+
+                <div className="join-game">
+                    <TextField id="join-game" label="Game ID" variant="standard" onChange={setGameID}/>
+                    <Button className="join-game-button"
+                        onClick={joinGame}>
+                        Join Game
+                    </Button>
+                </div>
+
+            </div>
+
+
         </div>
-
-        <div className="join-game">
-          <button className="join-game-button">Join Game</button>
-        </div>
-        
-      </div>
-      
-      
-      
-    </div>
-  );
+    );
 }
 
 export default MainMenu;
