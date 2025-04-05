@@ -2,10 +2,13 @@
   box-sizing: border-box;
 }
 
-.main-buttons{
+.title{
+  text-align: center;
+}
+
+.buttons{
   display: flex;
   justify-content: space-evenly;
-  align-items: center;
-  flex-direction: column;
-  height: 100vh;
+  align-content: center;
+  margin-top: 20px;
 }
