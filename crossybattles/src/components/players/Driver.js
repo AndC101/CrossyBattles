@@ -5,9 +5,10 @@ import Water from '../land-types/Water';
 import Grass from '../land-types/Grass';
 import TrainTrack from '../land-types/TrainTrack';
 import './players.css';
-function Driver() {
-  const mapLength = 100;
+
+const Driver = () => {
   const [seed, setSeed] = useState();
+  const [randomSeed, setRandomSeed] = useState();
   const [map, setMap] = useState([]);
 
   const TERRAIN_TEMPLATES = [
@@ -24,11 +25,12 @@ function Driver() {
     return (a * seed + c) % m;
   }
 
-  function generateTerrain(){
-    
-    let ret = [];
-    ret.concat();
-
+  function generateTerrain(seed){
+    let div = randomSeed/TERRAIN_TEMPLATES.length;
+    let index = Math.floor(div);
+    let ret =[];
+    ret.concat(TERRAIN_TEMPLATES[index]);
+    setRandomSeed(nextSeed(randomSeed));
     return ret;
   }
 
@@ -52,6 +54,7 @@ function Driver() {
     }
     
     setSeed(hash >>> 0);
+    setRandomSeed(hash >>> 0);
   },[])
 
   useEffect(() => {
