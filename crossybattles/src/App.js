@@ -1,9 +1,11 @@
-import {BrowserRouter as Router, Route, Routes} from 'react-router-dom';
-import MyComponent from './components/MyComponent';
+import { BrowserRouter, Routes, Route } from "react-router-dom";
+import Chicken from './components/sprites/chicken';
+import MainMenu from './MainMenu';
 import {useEffect, useState, useRef} from "react";
 const URL_WEB_SOCKET = 'ws://localhost:8089';
 
-function App() {
+export default function App() {
+
     const ws = useRef(null);
     const [channelName, setChannelName] = useState(0);
     const [userId, setUserId] = useState(Math.floor(Math.random() * 1000000));
@@ -69,15 +71,11 @@ function App() {
         }));
     };
 
-
     return (
-        <Router>
+        <BrowserRouter>
             <Routes>
-                <Route path="/" element={<Home/>}/>
-                <Route path="/my-component" element={<MyComponent/>}/>
+                <Route path="/chicken" element={<Chicken />} />
+                <Route path="/" element={<MainMenu />}/>
             </Routes>
-        </Router>
+        </BrowserRouter>
     );
-}
-
-export default App;
