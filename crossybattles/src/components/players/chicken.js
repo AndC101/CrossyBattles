@@ -31,17 +31,17 @@ function Chicken() {
       let newY = prevPosition.y;
 
       switch (key) {
-        case 'w': // Move up
-          newY = Math.max(prevPosition.y - 20, 0);
-          break;
+        // case 'w': // Move up
+        //   newY = Math.max(prevPosition.y - 20, 0);
+        //   break;
         case 'a': // Move left
-          newX = Math.max(prevPosition.x - 20, 0);
+          newX = Math.max(prevPosition.x - 40, 0);
           break;
-        case 's': // Move down
-          newY = Math.min(prevPosition.y + 20, window.innerHeight - 100);
-          break;
+        // case 's': // Move down
+        //   newY = Math.min(prevPosition.y + 20, window.innerHeight - 100);
+        //   break;
         case 'd': // Move right
-          newX = Math.min(prevPosition.x + 20, window.innerWidth - 100);
+          newX = Math.min(prevPosition.x + 40, window.innerWidth - 100);
           break;
         default:
           break;
