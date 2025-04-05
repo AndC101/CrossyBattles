@@ -79,6 +79,8 @@ export default function App() {
     return (
         <BrowserRouter>
             <Routes>
+                <Route path="/chicken" element={<Chicken />} />
+
                 <Route path="/" element={<MainMenu setGameID={setChannelName}/>}/>
                 <Route path="/chicken" element={<Chicken />} />
                 <Route path="/driver" element={<Driver />} />                
