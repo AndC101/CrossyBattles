@@ -85,8 +85,8 @@ const Chicken = ({move, position, disabled, setPosition}) => {
                 alt="Chicken"
                 style={{
                     position: 'absolute',
-                    top: `${position.y}px`,
-                    left: `${position.x}px`,
+                    top: `${newPos.y}px`,
+                    left: `${newPos.x}px`,
                     transition: 'top 0.1s, left 0.1s', // Optional: smooth movement
                 }}
             />
