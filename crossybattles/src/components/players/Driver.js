@@ -1,7 +1,7 @@
 import React, { useEffect, useState, useRef } from 'react';
 import carImage from '../../images/carpixel.png';
 import roadImage from '../../images/road.webp';
-import waterImage from '../../images/water.png';
+import waterImage from '../../images/mud.webp';
 import grassImage from '../../images/pixelgrass.png';
 import './players.css';
 import Chicken from './chicken'
@@ -131,9 +131,7 @@ const Driver = () => {
 
   function updateCars(){
     const ctx = canvasRef.current.getContext('2d');
-    console.log(offScreenRef.current)
     if (offScreenRef.current) {
-      console.log("drawing offscreen canvas");
       ctx.clearRect(0, 0, window.innerWidth, window.innerHeight);
       ctx.drawImage(offScreenRef.current, 0, 0);
       
@@ -142,7 +140,9 @@ const Driver = () => {
 
     for(let i = 0; i < cars.length; i++){
       const car = cars[i];
+
       car.x += (1)/cars.length;
+
       ctx.drawImage(carImg, car.x, car.y);
     }
     
@@ -160,7 +160,10 @@ const Driver = () => {
       ctx.drawImage(img, 0, row * tileSize, tileSize, tileSize); // Draw the image
     };
     if(selectedObstacle == "car"){
+
+
       cars.push({x: 0, y: row * tileSize, time: Date.now});
+
       updateCars();
     }
     
