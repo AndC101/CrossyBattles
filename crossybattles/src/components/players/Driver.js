@@ -2,7 +2,7 @@ import React, { useEffect, useState, useRef } from 'react';
 import carImage from '../../images/carpixel.png';
 import roadImage from '../../images/road.webp';
 import waterImage from '../../images/water.png';
-import grassImage from '../../images/grass.png';
+import grassImage from '../../images/pixelgrass.png';
 import './players.css';
 import Chicken from './chicken'
 
@@ -13,7 +13,7 @@ const Driver = () => {
   const canvasRef = useRef(null); // Ref for the canvas element
   const offScreenRef = useRef(null); // Ref for the canvas element
   const [selectedObstacle, setSelectedObstacle] = useState("none"); // State to store the selected obstacle
-
+  const [carMoving, setCarMoving] = useState(false);
     const carImg = new Image();
     carImg.src = carImage;
 
@@ -102,10 +102,6 @@ const Driver = () => {
       let y = 0;
       const tilesPerRow = Math.floor(canvas.width / tileSize);
 
-      
-
-
-
       // Preload all images
       const imagePromises = map.map((terrain) => {
         return new Promise((resolve) => {
@@ -146,7 +142,7 @@ const Driver = () => {
 
     for(let i = 0; i < cars.length; i++){
       const car = cars[i];
-      car.x += 1;
+      car.x += (1)/cars.length;
       ctx.drawImage(carImg, car.x, car.y);
     }
     
@@ -163,8 +159,11 @@ const Driver = () => {
     img.onload = () => {
       ctx.drawImage(img, 0, row * tileSize, tileSize, tileSize); // Draw the image
     };
-    cars.push({x: 0, y: row * tileSize, time: Date.now});
-    updateCars();
+    if(selectedObstacle == "car"){
+      cars.push({x: 0, y: row * tileSize, time: Date.now});
+      updateCars();
+    }
+    
   }
 
   // useEffect(() => {
