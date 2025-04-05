@@ -69,36 +69,43 @@ const Driver = () => {
        ret = ret.concat(generateTerrain());
       }
       setMap(ret);
+      updateCanvas();
     }
   }, [seed]);
 
-  useEffect(() => {
+  function updateCanvas(){
     if (map.length > 0) {
       const canvas = canvasRef.current;
       const ctx = canvas.getContext('2d');
-
+      ctx.clearRect(0, 0, canvas.width, canvas.height); // Clear the canvas
       const tileSize = 50;
       let x = 0;
       let y = 0;
 
-      map.forEach((terrain, i) => {
-        if(y < canvas.height) {
-          const img = new Image();
-          img.src = TERRAIN_IMAGES[terrain];
-          img.onload = () => {
-            while(x < canvas.width) {
-              ctx.drawImage(img, x, y, tileSize, tileSize);
-              x += tileSize;
+        for(let i = 0; i < map.length; i++){
+          const terrain = map[i];
+          if(y < canvas.height) {
+            const img = new Image();
+            img.src = TERRAIN_IMAGES[terrain];
+            img.onload = () => {
+              while(x < canvas.width) {
+                ctx.drawImage(img, x, y, tileSize, tileSize);
+                x += tileSize;
+              }
+              if (x >= canvas.width) {
+                x = 0;
+                y += tileSize;
+              }
             }
-            if (x >= canvas.width) {
-              x = 0;
-              y += tileSize;
+            if (y >= canvas.height) {
+              break;
             }
           }
-        };
-      });
+        }
     }
-  }, [map]);
+
+     
+  }
 
   return (
     <div className="driver-screen">
