@@ -1,6 +1,4 @@
 import { BrowserRouter, Routes, Route } from "react-router-dom";
-import Chicken from './components/sprites/chicken';
-import ChickenPlayer from './chickenPlayer'
 import MainMenu from './MainMenu';
 import {useEffect, useState, useRef} from "react";
 import Chicken from "./components/players/Chicken.js";
@@ -82,7 +80,6 @@ export default function App() {
         <BrowserRouter>
             <Routes>
                 <Route path="/chicken" element={<Chicken />} />
-                <Route path="/chickenPlayer" element={<ChickenPlayer />} />
 
                 <Route path="/" element={<MainMenu setGameID={setChannelName}/>}/>
                 <Route path="/chicken" element={<Chicken />} />

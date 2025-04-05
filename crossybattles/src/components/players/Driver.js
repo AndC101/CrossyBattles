@@ -4,6 +4,7 @@ import roadImage from '../../images/road.webp';
 import waterImage from '../../images/water.png';
 import grassImage from '../../images/grass.png';
 import './players.css';
+import Chicken from './Chicken'
 
 const Driver = () => {
   const [seed, setSeed] = useState();
@@ -107,6 +108,7 @@ const Driver = () => {
       <div className="sidebar">
         <img src={carImage} alt="Car"></img>
       </div>
+      <Chicken></Chicken>
     </div>
   );
 };
