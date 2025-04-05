@@ -1,12 +1,12 @@
 import React, { useEffect, useState, useRef } from 'react';
-import carImage from '../../images/car.webp';
+import carImage from '../../images/carpixel.png';
 import roadImage from '../../images/road.webp';
 import waterImage from '../../images/water.png';
 import grassImage from '../../images/grass.png';
 import './players.css';
 import Chicken from './chicken'
 
-const Driver = () => {
+const Movement = () => {
   const [seed, setSeed] = useState();
   const randomSeed = useRef("");
   const [map, setMap] = useState([]);
@@ -27,12 +27,13 @@ const Driver = () => {
 
   const TERRAIN_TEMPLATES = [
     ['road', 'grass', 'grass'],
-    ['water', 'water', 'road'],
+    ['grass', 'water', 'road'],
     ['road', 'road', 'grass'],
     ['road','water', 'grass'],
-    ['water', 'road', 'grass']
+    ['grass', 'road', 'grass']
   ];
 
+  //generates a random seed for landscape
   function nextSeed(seed) {
     const a = 1664525;
     const c = 1013904223;
@@ -41,6 +42,7 @@ const Driver = () => {
     return (a * seed + c) % m;
   }
 
+  //generates the terrain randomly
   function generateTerrain() {
     let div = 2147483647 / TERRAIN_TEMPLATES.length;
     let index = Math.floor(randomSeed.current / div);
@@ -50,6 +52,7 @@ const Driver = () => {
     return ret;
   }
 
+  //creates the initial seed
   useEffect(() => {
     const t = performance.now();
     const r = Math.floor(Math.random() * Number.MAX_SAFE_INTEGER);
@@ -70,6 +73,7 @@ const Driver = () => {
     });
   }, []);
 
+  //generates a new seed/map
   useEffect(() => {
     if(randomSeed.current != undefined){
       let ret = [];
@@ -82,6 +86,7 @@ const Driver = () => {
     }
   }, [seed]);
 
+  //regenerate a new canvas
   function updateCanvas(){
     if (map.length > 0) {
       const canvas = canvasRef.current;
@@ -123,14 +128,11 @@ const Driver = () => {
   return (
     <div className="driver-screen">
       <div className="game-board">
-        <canvas  ref={canvasRef} width={window.innerWidth} height={window.innerHeight}></canvas>
-      </div>
-      <div className="sidebar">
-        <img onClick={() => {setSelectedObstacle("car"); console.log(selectedObstacle);}} src={carImage} alt="Car"></img>
+        <canvas ref={canvasRef} width={window.innerWidth} height={window.innerHeight}></canvas>
       </div>
       <Chicken></Chicken>
     </div>
   );
 };
 
-export default Driver;
+export default Movement;
