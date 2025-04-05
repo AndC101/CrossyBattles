@@ -5,7 +5,7 @@ function App() {
   const [position, setPosition] = useState({ x: 100, y: 100 });
 
   // Handle keyboard events
-  const handleKeyDown = (e) => {
+  const handleKeyPress = (e) => {
     switch (e.key) {
       case 'w': // Move up
         setPosition((prevPosition) => ({ ...prevPosition, y: prevPosition.y - 10 }));
@@ -26,17 +26,17 @@ function App() {
 
   // Add event listener for keydown event
   useEffect(() => {
-    window.addEventListener('keydown', handleKeyDown);
+    window.addEventListener('keypress', handleKeyPress);
     return () => {
-      window.removeEventListener('keydown', handleKeyDown);
+      window.removeEventListener('keypress', handleKeyPress);
     };
   }, []);
 
   return (
     <div className="App">
-      {/* Image of the chicken */}
+      {}
       <img
-        src="./chicken.png" // Replace with your chicken image path
+        src="/images/chicken.png" // Replace with your chicken image path
         alt="Chicken"
         style={{
           position: 'absolute',
