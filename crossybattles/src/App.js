@@ -40,17 +40,18 @@ export default function App() {
                     break;
                 }
                 case 'chicken_position_update': {
+
                     break;
                 }
-                case 'offer_sdp_received': {
-                    const offer = parsedMessage.body;
-                    onAnswer(offer);
-                    break;
-                }
-                case 'answer_sdp_received': {
-                    gotRemoteDescription(parsedMessage.body);
-                    break;
-                }
+                // case 'offer_sdp_received': {
+                //     const offer = parsedMessage.body;
+                //     onAnswer(offer);
+                //     break;
+                // }
+                // case 'answer_sdp_received': {
+                //     gotRemoteDescription(parsedMessage.body);
+                //     break;
+                // }
                 case 'quit': {
                     break;
                 }
@@ -64,7 +65,7 @@ export default function App() {
     }
 
     const sendWsMessage = (type, body) => {
-        log.debug('sendWsMessage invoked', type, body);
+        console.log('sendWsMessage invoked', type, body);
         ws.current.send(JSON.stringify({
             type,
             body,
@@ -75,7 +76,7 @@ export default function App() {
         <BrowserRouter>
             <Routes>
                 <Route path="/chicken" element={<Chicken />} />
-                <Route path="/" element={<MainMenu />}/>
+                <Route path="/" element={<MainMenu setGameID={setChannelName}/>}/>
             </Routes>
         </BrowserRouter>
     );
