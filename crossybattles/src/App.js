@@ -1,7 +1,8 @@
 import { BrowserRouter, Routes, Route } from "react-router-dom";
 import MainMenu from './MainMenu';
 import {useEffect, useState, useRef} from "react";
-import Chicken from "./components/players/Chicken";
+import Chicken from "./components/players/Chicken.js";
+import Driver from "./components/players/Driver.js";
 
 
 const URL_WEB_SOCKET = 'ws://localhost:8089';
@@ -78,8 +79,9 @@ export default function App() {
     return (
         <BrowserRouter>
             <Routes>
-                <Route path="/chicken" element={<Chicken />} />
                 <Route path="/" element={<MainMenu setGameID={setChannelName}/>}/>
+                <Route path="/chicken" element={<Chicken />} />
+                <Route path="/driver" element={<Driver />} />                
             </Routes>
         </BrowserRouter>
     );
