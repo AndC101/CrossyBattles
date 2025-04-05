@@ -11,9 +11,9 @@ const Chicken = ({move, position, disabled, setPosition}) => {
             setPos({x: position.x, y: 570})
         }
         else(
-            setPos(newPos)
+            setPos(position)
         )
-    }, []);
+    }, [position]);
 
     // State to store the position of the chicken
 
