@@ -3,7 +3,12 @@ import Chicken from './components/sprites/chicken';
 import ChickenPlayer from './chickenPlayer'
 import MainMenu from './MainMenu';
 import {useEffect, useState, useRef} from "react";
+import Chicken from "./components/players/Chicken.js";
+import Driver from "./components/players/Driver.js";
+
+
 const URL_WEB_SOCKET = 'ws://localhost:8089';
+
 
 export default function App() {
 
@@ -12,66 +17,66 @@ export default function App() {
     const [userId, setUserId] = useState(Math.floor(Math.random() * 1000000));
 
     useEffect(() => {
-        connect();
+        //connect();
     }, []);
 
-    const connect = () => {
-        const wsClient = new WebSocket(URL_WEB_SOCKET);
-        wsClient.onopen = () => {
-            console.log('ws opened');
-            ws.current = wsClient;
-        };
+    // const connect = () => {
+    //     const wsClient = new WebSocket(URL_WEB_SOCKET);
+    //     wsClient.onopen = () => {
+    //         console.log('ws opened');
+    //         ws.current = wsClient;
+    //     };
 
-        wsClient.onclose = function(e) {
-            console.log('Socket is closed. Reconnect will be attempted in 1 second.', e.reason);
-            setTimeout(function() {
-                connect();
-            }, 1000);
-        };
-        wsClient.onmessage = (message) => {
-            console.log('ws message received', message.data);
-            const parsedMessage = JSON.parse(message.data);
-            switch (parsedMessage.type) {
-                case 'joined': {
-                    const body = parsedMessage.body;
-                    console.log('users in this channel', body);
-                    break;
-                }
-                case 'game_start' : {
-                    break;
-                }
-                case 'chicken_position_update': {
+    //     wsClient.onclose = function(e) {
+    //         console.log('Socket is closed. Reconnect will be attempted in 1 second.', e.reason);
+    //         setTimeout(function() {
+    //             connect();
+    //         }, 1000);
+    //     };
+    //     wsClient.onmessage = (message) => {
+    //         console.log('ws message received', message.data);
+    //         const parsedMessage = JSON.parse(message.data);
+    //         switch (parsedMessage.type) {
+    //             case 'joined': {
+    //                 const body = parsedMessage.body;
+    //                 console.log('users in this channel', body);
+    //                 break;
+    //             }
+    //             case 'game_start' : {
+    //                 break;
+    //             }
+    //             case 'chicken_position_update': {
 
-                    break;
-                }
-                // case 'offer_sdp_received': {
-                //     const offer = parsedMessage.body;
-                //     onAnswer(offer);
-                //     break;
-                // }
-                // case 'answer_sdp_received': {
-                //     gotRemoteDescription(parsedMessage.body);
-                //     break;
-                // }
-                case 'quit': {
-                    break;
-                }
-                default:
-                    break;
-            }
-        };
-        return () => {
-            wsClient.close();
-        };
-    }
+    //                 break;
+    //             }
+    //             // case 'offer_sdp_received': {
+    //             //     const offer = parsedMessage.body;
+    //             //     onAnswer(offer);
+    //             //     break;
+    //             // }
+    //             // case 'answer_sdp_received': {
+    //             //     gotRemoteDescription(parsedMessage.body);
+    //             //     break;
+    //             // }
+    //             case 'quit': {
+    //                 break;
+    //             }
+    //             default:
+    //                 break;
+    //         }
+    //     };
+    //     return () => {
+    //         wsClient.close();
+    //     };
+    // }
 
-    const sendWsMessage = (type, body) => {
-        console.log('sendWsMessage invoked', type, body);
-        ws.current.send(JSON.stringify({
-            type,
-            body,
-        }));
-    };
+    // const sendWsMessage = (type, body) => {
+    //     console.log('sendWsMessage invoked', type, body);
+    //     ws.current.send(JSON.stringify({
+    //         type,
+    //         body,
+    //     }));
+    // };
 
     return (
         <BrowserRouter>
@@ -80,6 +85,8 @@ export default function App() {
                 <Route path="/chickenPlayer" element={<ChickenPlayer />} />
 
                 <Route path="/" element={<MainMenu setGameID={setChannelName}/>}/>
+                <Route path="/chicken" element={<Chicken />} />
+                <Route path="/driver" element={<Driver />} />                
             </Routes>
         </BrowserRouter>
     );
