@@ -6,16 +6,15 @@ import grassImage from '../../images/pixelgrass.png';
 import './players.css';
 import Chicken from './chicken'
 
-const Driver = () => {
-  const [seed, setSeed] = useState();
+const Driver = ({addCar, newPos, setSeed}) => {
   const randomSeed = useRef("");
   const [map, setMap] = useState([]);
   const canvasRef = useRef(null); // Ref for the canvas element
   const offScreenRef = useRef(null); // Ref for the canvas element
   const [selectedObstacle, setSelectedObstacle] = useState("none"); // State to store the selected obstacle
-  const [carMoving, setCarMoving] = useState(false);
-    const carImg = new Image();
-    carImg.src = carImage;
+
+  const carImg = new Image();
+  carImg.src = carImage;
 
   const cars = [];
 
@@ -39,12 +38,12 @@ const Driver = () => {
     ['water', 'road', 'grass']
   ];
 
-  function nextSeed(seed) {
+  function nextSeed(temp_seed) {
     const a = 1664525;
     const c = 1013904223;
     const m = 2 ** 31;
 
-    return (a * seed + c) % m;
+    return (a * temp_seed + c) % m;
   }
 
   function generateTerrain() {
@@ -71,23 +70,18 @@ const Driver = () => {
     setSeed(hash >>> 0);
     randomSeed.current = hash >>> 0;
 
+    let ret = [];
+    for (let i = 0; i < 10; i++) {
+      ret = ret.concat(generateTerrain());
+    }
+    setMap(ret);
+
     TERRAIN_TEMPLATES.sort(function (x, y) {
       return x.length - y.length;
     });
   }, []);
 
   useEffect(() => {
-    if(randomSeed.current != undefined){
-      let ret = [];
-      for(let i = 0; i < 10; i++){
-       ret = ret.concat(generateTerrain());
-      }
-      setMap(ret);
-      updateCanvas();
-    }
-  }, [seed]);
-
-  function updateCanvas(){
     console.log("updating canvas");
     if (map.length > 0) {
       const canvas = canvasRef.current;
@@ -95,7 +89,7 @@ const Driver = () => {
       const offScreenCanvas = offScreenRef.current;
       const offScreenCtx = offScreenCanvas.getContext('2d');
       offScreenCanvas.width = canvas.width;
-      offScreenCanvas.height = canvas.height; 
+      offScreenCanvas.height = canvas.height;
 
       const tileSize = 60;
       let x = 0;
@@ -121,31 +115,28 @@ const Driver = () => {
             offScreenCtx.drawImage(img, x, y, tileSize, tileSize); // Draw the terrain
             x += tileSize; // Move to the next tile position
           }
-         
-        });
-      }); 
-    }
-    
 
-  }
+        });
+      });
+    }
+  }, [map]);
 
   function updateCars(){
     const ctx = canvasRef.current.getContext('2d');
+    console.log(offScreenRef.current)
     if (offScreenRef.current) {
+      console.log("drawing offscreen canvas");
       ctx.clearRect(0, 0, window.innerWidth, window.innerHeight);
       ctx.drawImage(offScreenRef.current, 0, 0);
-      
+
     }
-    
 
     for(let i = 0; i < cars.length; i++){
       const car = cars[i];
-
       car.x += (1)/cars.length;
-
       ctx.drawImage(carImg, car.x, car.y);
     }
-    
+
     window.requestAnimationFrame(updateCars);
   }
 
@@ -160,13 +151,10 @@ const Driver = () => {
       ctx.drawImage(img, 0, row * tileSize, tileSize, tileSize); // Draw the image
     };
     if(selectedObstacle == "car"){
-
-
       cars.push({x: 0, y: row * tileSize, time: Date.now});
-
+      addCar({x: 0, y: row * tileSize, time: Date.now});
       updateCars();
     }
-    
   }
 
   // useEffect(() => {
@@ -189,7 +177,7 @@ const Driver = () => {
       <div className="sidebar">
         <img onClick={() => {setSelectedObstacle('car'); console.log(selectedObstacle);}} src={carImage} alt="Car"></img>
       </div>
-      <Chicken></Chicken>
+        <Chicken disabled={true} position={newPos}/>
     </div>
   );
 };

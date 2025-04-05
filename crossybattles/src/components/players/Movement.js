@@ -6,12 +6,12 @@ import grassImage from '../../images/pixelgrass.png';
 import './players.css';
 import Chicken from './chicken'
 
-const Movement = () => {
-  const [seed, setSeed] = useState();
+const Movement = ({move, seed}) => {
   const randomSeed = useRef("");
   const [map, setMap] = useState([]);
   const canvasRef = useRef(null); // Ref for the canvas element
-  
+  const [position, setPosition] = useState({ x: 600, y: 570 });
+
   const [keyPressed, setKeyPressed] = useState(false);
   const [scrollOffset, setScrollOffset] = useState(0);
 
@@ -33,6 +33,7 @@ const Movement = () => {
     if (!keyPressed) {
       setKeyPressed(true); // Mark the key as pressed
       moveCanvas(e.key);
+
     }
   };
 
@@ -92,26 +93,22 @@ const Movement = () => {
     };
   }, [keyPressed]);
 
-  //creates the initial seed
   useEffect(() => {
-    const t = performance.now();
-    const r = Math.floor(Math.random() * Number.MAX_SAFE_INTEGER);
-    const combined = t.toString() + r.toString();
+    if (seed !== null) {
+      console.log("chicken seed: " + seed!==null);
+      randomSeed.current = seed;
 
-    let hash = 0;
-    for (let i = 0; i < combined.length; i++) {
-      const char = combined.charCodeAt(i);
-      hash = (hash << 5) - hash + char;
-      hash |= 0;
+      let ret = [];
+      for (let i = 0; i < 10; i++) {
+        ret = ret.concat(generateTerrain());
+      }
+      setMap(ret);
+
+      TERRAIN_TEMPLATES.sort(function (x, y) {
+        return x.length - y.length;
+      });
     }
-    hash = Math.abs(hash);
-    setSeed(hash >>> 0);
-    randomSeed.current = hash >>> 0;
-
-    TERRAIN_TEMPLATES.sort(function (x, y) {
-      return x.length - y.length;
-    });
-  }, []);
+  }, [seed]);
 
   //generates a new seed/map
   useEffect(() => {
@@ -144,46 +141,61 @@ const Movement = () => {
   
     loadImages();
   }, []);
-    
-  //regenerate a new canvas
-  function updateCanvas() {
-    if (map.length > 0 && Object.keys(terrainImageCache.current).length > 0) {
+
+  useEffect(() => {
+    console.log("updating canvas");
+    if (map.length > 0 && seed !== null) {
       const canvas = canvasRef.current;
       const ctx = canvas.getContext('2d');
-      ctx.clearRect(0, 0, canvas.width, canvas.height);
-  
-      const tileSize = 50;
-  
-      map.forEach((terrain, i) => {
-        const img = terrainImageCache.current[terrain];
-        const y = i * tileSize + scrollOffset;
-        let x = 0;
-  
-        while (x < canvas.width) {
-          ctx.drawImage(img, x, y, tileSize, tileSize);
-          x += tileSize;
-        }
+      // const offScreenCanvas = offScreenRef.current;
+      // const offScreenCtx = offScreenCanvas.getContext('2d');
+      // offScreenCanvas.width = canvas.width;
+      // offScreenCanvas.height = canvas.height;
+
+      const tileSize = 60;
+      let x = 0;
+      let y = 0;
+      const tilesPerRow = Math.floor(canvas.width / tileSize);
+
+      // Preload all images
+      const imagePromises = map.map((terrain) => {
+        return new Promise((resolve) => {
+          const img = new Image();
+          img.src = TERRAIN_IMAGES[terrain];
+          img.onload = () => resolve({img, terrain});
+        });
+      });
+
+      Promise.all(imagePromises).then((images) => {
+        images.forEach((data, i) => {
+          const {img} = data;
+          let x = 0;
+          const y = i * tileSize + scrollOffset; // Calculate y position
+          while (x < canvas.width) {
+            ctx.drawImage(img, x, y, tileSize, tileSize); // Draw the image
+            // offScreenCtx.drawImage(img, x, y, tileSize, tileSize); // Draw the terrain
+            x += tileSize; // Move to the next tile position
+          }
+
+        });
       });
     }
-  }
-  
+  }, [map, scrollOffset, imagesLoaded]);
 
   const moveCanvas = (key) => {
     switch (key) {
       case 'w':
         setScrollOffset(prev => prev + 40);
+        move({ x: position.x, y: position.y - 40});
+        setPosition({ x: position.x, y: position.y - 40})
         break;
       case 's':
         setScrollOffset(prev => prev - 40);
+        move({ x: position.x, y: position.y + 40});
+        setPosition({ x: position.x, y: position.y + 40})
         break;
     }
   };
-  
-  useEffect(() => {
-    if (map.length > 0 && imagesLoaded) {
-      updateCanvas();
-    }
-  }, [map, scrollOffset, imagesLoaded]);
     
 
   // Move the canvas based on the pressed key
@@ -208,10 +220,11 @@ const Movement = () => {
   return (
     <div className="driver-screen">
       <div className="game-board">
+        {/*<canvas ref={offScreenRef} style={{display: "none"}} width={window.innerWidth} height={window.innerHeight}></canvas>*/}
         <canvas ref={canvasRef} width={window.innerWidth} height={window.innerHeight}></canvas>
         loadImages();
       </div>
-      <Chicken></Chicken>
+      <Chicken move={move} position={position} setPosition={setPosition}/>
     </div>
   );
 };

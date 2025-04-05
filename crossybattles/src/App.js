@@ -1,20 +1,24 @@
 import {BrowserRouter, Route, Routes } from "react-router-dom";
 import MainMenu from './MainMenu';
 import {useEffect, useRef, useState} from "react";
-import Chicken from "./components/players/chicken.js";
 import Driver from "./components/players/Driver.js";
-import Movement from "./components/players/Movement.js";
+import ChickenParent from "./components/chickenParent";
+import Movement from "./components/players/Movement";
+
 const URL_WEB_SOCKET = 'ws://localhost:4000';
 
 export default function App() {
 
     const ws = useRef(null);
+    const cars = [];
     const [channelName, setChannelName] = useState(0);
     const [userId, setUserId] = useState(Math.floor(Math.random() * 1000000));
     const [users, setUsers] = useState([]);
     const isChicken = useRef(false);
     const [chickenError, setChickenError] = useState(0);
     const [full, setFull] = useState(false);
+    const [seed, setSeed] = useState(null)
+    const [position, setPosition] = useState({x: 0, y:0})
 
     useEffect(() => {
         connect();
@@ -66,19 +70,23 @@ export default function App() {
                     }
                     break;
                 }
-                case 'chicken_position_update': {
-
+                case 'driver_seed': {
+                    const body = parsedMessage.body;
+                    setSeed(body)
                     break;
                 }
-                // case 'offer_sdp_received': {
-                //     const offer = parsedMessage.body;
-                //     onAnswer(offer);
-                //     break;
-                // }
-                // case 'answer_sdp_received': {
-                //     gotRemoteDescription(parsedMessage.body);
-                //     break;
-                // }
+                case 'chicken_position_update': {
+                    const body = parsedMessage.body;
+                    console.log(body);
+                    setPosition(body)
+                    break;
+                }
+                case 'car_add': {
+                    const body = parsedMessage.body;
+                    console.log(body);
+                    cars.push(body);
+                    break;
+                }
                 case 'quit': {
                     break;
                 }
@@ -135,6 +143,34 @@ export default function App() {
         });
     };
 
+    const sendTerrainSeed = (driverSeed) => {
+        setSeed(driverSeed);
+        const gameID = channelName;
+        sendWsMessage('seed', {
+            gameID,
+            userId,
+            driverSeed
+        });
+    }
+
+    const move = (position) => {
+        const gameID = channelName;
+        sendWsMessage('move', {
+            gameID,
+            userId,
+            position
+        });
+    }
+
+    const addCar = (car) => {
+        const gameID = channelName;
+        sendWsMessage('move', {
+            gameID,
+            userId,
+            car
+        });
+    }
+
     return (
         <BrowserRouter>
             <Routes>
@@ -146,10 +182,8 @@ export default function App() {
                                           setPlayerType={startGame}
                                           userList={users}
                                           setGameID={join}/>}/>
-                <Route path="/chicken" element={<Chicken/>}/>
-                <Route path="/driver" element={<Driver />} />
-                <Route path="/movement" element={<Movement />} />
-
+                <Route path="/chicken" element={<Movement seed={seed} move={move}/>}/>
+                <Route path="/driver" element={<Driver addCar={addCar} newPos={position} setSeed={sendTerrainSeed}/>} />
             </Routes>
         </BrowserRouter>
     );
