@@ -1,15 +1,15 @@
-import { BrowserRouter as Router, Routes, Route } from 'react-router-dom';
-import MyComponent from './components/MyComponent';
+import { BrowserRouter, Routes, Route } from "react-router-dom";
+import Chicken from './components/sprites/chicken';
+import MainMenu from './MainMenu';
 
-function App() {
+export default function App() {
   return (
-    <Router>
+    <BrowserRouter>
       <Routes>
-        <Route path="/" element={<Home />} />
-        <Route path="/my-component" element={<MyComponent />} />
+        <Route path="/chicken" element={<Chicken />} />
+        <Route path="/" element={<MainMenu />}/>
       </Routes>
-    </Router>
+    </BrowserRouter>
   );
 }
 
-export default App;

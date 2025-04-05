@@ -1,23 +1,9 @@
 import React, { useState, useEffect } from 'react';
 
-const MyComponent = () => {
-  const [data, setData] = useState(null);
-
-  useEffect(() => {
-    // Example side effect
-    console.log('Component mounted');
-    return () => {
-      console.log('Component unmounted');
-    };
-  }, []);
-
+const Chicken = () => {
   return (
-    <div className="p-4 rounded-2xl shadow bg-white">
-      <p1>TESTINGGG</p1>
-      <h1 className="text-xl font-bold mb-2">Hello from MyComponent</h1>
-      <p className="text-gray-700">This is a reusable component template.</p>
-    </div>
+      <p>TESTINGGG</p>
   );
 };
 
-export default MyComponent;
+export default Chicken;
