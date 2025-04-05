@@ -19,9 +19,11 @@ const Driver = () => {
   };
 
   const TERRAIN_TEMPLATES = [
-    ['grass', 'grass', 'grass'],
-    ['water', 'water'],
-    ['road', 'road'],
+    ['road', 'grass', 'grass'],
+    ['water', 'water', 'road'],
+    ['road', 'road', 'grass'],
+    ['road','water', 'grass'],
+    ['water', 'road', 'grass']
   ];
 
   function nextSeed(seed) {
