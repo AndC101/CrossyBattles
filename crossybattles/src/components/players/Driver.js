@@ -4,7 +4,7 @@ import roadImage from '../../images/road.webp';
 import waterImage from '../../images/mud.webp';
 import grassImage from '../../images/pixelgrass.png';
 import './players.css';
-import Chicken from './Chicken'
+import Chicken from './chicken'
 
 const Driver = () => {
   const [seed, setSeed] = useState();
@@ -32,9 +32,11 @@ const Driver = () => {
   };
 
   const TERRAIN_TEMPLATES = [
-    ['grass'],
-    ['water'],
-    ['road'],
+    ['road', 'grass', 'grass'],
+    ['water', 'water', 'road'],
+    ['road', 'road', 'grass'],
+    ['road','water', 'grass'],
+    ['water', 'road', 'grass']
   ];
 
   function nextSeed(seed) {
@@ -139,7 +141,9 @@ const Driver = () => {
 
     for(let i = 0; i < cars.length; i++){
       const car = cars[i];
-      car.x += (car.speed)/cars.length;
+
+      car.x += (1)/cars.length;
+
       ctx.drawImage(carImg, car.x, car.y);
     }
     
@@ -157,8 +161,10 @@ const Driver = () => {
       ctx.drawImage(img, 0, row * tileSize, tileSize, tileSize); // Draw the image
     };
     if(selectedObstacle == "car"){
-      console.log(map);
-      cars.push({x: 0, y: row * tileSize, time: Date.now, speed: map[row] == "road"? 1 : 0.5});
+
+
+      cars.push({x: 0, y: row * tileSize, time: Date.now});
+
       updateCars();
     }
     
