@@ -1,8 +1,11 @@
 import { BrowserRouter, Routes, Route } from "react-router-dom";
-import Chicken from './components/sprites/chicken';
 import MainMenu from './MainMenu';
 import {useEffect, useState, useRef} from "react";
+import Chicken from "./components/players/Chicken";
+
+
 const URL_WEB_SOCKET = 'ws://localhost:8089';
+
 
 export default function App() {
 

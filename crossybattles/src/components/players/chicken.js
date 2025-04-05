@@ -1,6 +1,6 @@
 import React, { useState, useEffect } from 'react';
 
-function App() {
+function Chicken() {
   // State to store the position of the chicken
   const [position, setPosition] = useState({ x: 100, y: 100 });
 
@@ -49,4 +49,4 @@ function App() {
   );
 }
 
-export default App;
+export default Chicken;
