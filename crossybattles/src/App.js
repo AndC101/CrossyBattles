@@ -3,7 +3,7 @@ import MainMenu from './MainMenu';
 import {useEffect, useRef, useState} from "react";
 import Chicken from "./components/players/chicken.js";
 import Driver from "./components/players/Driver.js";
-
+import Movement from "./components/players/Movement.js";
 const URL_WEB_SOCKET = 'ws://localhost:4000';
 
 export default function App() {
@@ -148,6 +148,8 @@ export default function App() {
                                           setGameID={join}/>}/>
                 <Route path="/chicken" element={<Chicken/>}/>
                 <Route path="/driver" element={<Driver />} />
+                <Route path="/movement" element={<Movement />} />
+
             </Routes>
         </BrowserRouter>
     );
