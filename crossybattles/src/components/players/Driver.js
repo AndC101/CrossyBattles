@@ -140,7 +140,9 @@ const Driver = () => {
 
     for(let i = 0; i < cars.length; i++){
       const car = cars[i];
-      car.x += (car.speed)/cars.length;
+
+      car.x += (1)/cars.length;
+
       ctx.drawImage(carImg, car.x, car.y);
     }
     
@@ -158,8 +160,10 @@ const Driver = () => {
       ctx.drawImage(img, 0, row * tileSize, tileSize, tileSize); // Draw the image
     };
     if(selectedObstacle == "car"){
-      cars.push({x: 0, y: row * tileSize, time: Date.now, speed: map[row * tileSize] == "road"? 1 : 0.5});
-      console.log(cars)
+
+
+      cars.push({x: 0, y: row * tileSize, time: Date.now});
+
       updateCars();
     }
     
